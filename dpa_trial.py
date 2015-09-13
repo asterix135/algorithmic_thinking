@@ -29,8 +29,8 @@ class DPATrial:
         each node number
         """
         self._num_nodes = num_nodes
-        self._node_numbers = [node for node in range(num_nodes) for dummy_idx in range(num_nodes)]
-
+        self._node_numbers = [node for node in range(num_nodes) for
+                              dummy_idx in range(num_nodes)]
 
     def run_trial(self, num_nodes):
         """
@@ -54,10 +54,6 @@ class DPATrial:
         self._node_numbers.append(self._num_nodes)
         self._node_numbers.extend(list(new_node_neighbors))
 
-        #update the number of nodes
+        # update the number of nodes
         self._num_nodes += 1
         return new_node_neighbors
-
-
-
-

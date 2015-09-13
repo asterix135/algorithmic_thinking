@@ -5,6 +5,7 @@ https://class.coursera.org/algorithmicthink1-003/human_grading/view/courses/9756
 import project1
 import matplotlib.pyplot as pyplot
 import random
+import dpa_algorithm
 
 
 GRAPH_FILE = 'alg_phys-cite.txt'
@@ -41,16 +42,16 @@ def question1(dir_graph, show_value=True):
     """Generates plot required for question 1"""
     citation_dist = project1.in_degree_distribution(dir_graph)
     normalised_dist = normalise_in_degree_dist(citation_dist)
-    pyplot.plot(normalised_dist.keys(), normalised_dist.values(), color='green',
-                linestyle='None', marker='.', markersize=5)
-    pyplot.xscale('log')
-    pyplot.yscale('log')
-    pyplot.xlabel('Number of Citations (scale = log10')
-    pyplot.ylabel('Frequency (scale = log10)')
-    pyplot.title("Question 1\n"
-                 "Citation Distribution for High-Energy Physics Papers")
-    pyplot.grid(True)
     if show_value:
+        pyplot.plot(normalised_dist.keys(), normalised_dist.values(),
+                    color='green', linestyle='None', marker='.', markersize=5)
+        pyplot.xscale('log')
+        pyplot.yscale('log')
+        pyplot.xlabel('Number of Citations (scale = log10)')
+        pyplot.ylabel('Frequency (scale = log10)')
+        pyplot.title("Question 1\n"
+                     "Citation Distribution for High-Energy Physics Papers")
+        pyplot.grid(True)
         pyplot.show()
     return normalised_dist
 
@@ -93,7 +94,7 @@ def question2():
     pyplot.text(6500, 0.04, 'n=10000\np=0.8', color='green')
     pyplot.xscale('log')
     pyplot.yscale('log')
-    pyplot.xlabel('in_degree of node (scale = log10')
+    pyplot.xlabel('in_degree of node (scale = log10)')
     pyplot.ylabel('Frequency (scale = log10)')
     pyplot.title("Question 2\n"
                  "Sample results of ER Algorithm")
@@ -111,8 +112,39 @@ def question3(graph):
     print('average out-degree: ' + str(edges/len(graph)))
 
 
+def question4(nodes, degree, show_value=True):
+    q4_graph = dpa_algorithm.dpa(nodes, degree)
+    q4_normalised = normalise_in_degree_dist(project1.in_degree_distribution(
+        q4_graph))
+    if show_value:
+        pyplot.loglog(q4_normalised.keys(), q4_normalised.values(),
+                      color='magenta', linestyle='none', marker='.',
+                      markersize=6)
+        pyplot.title('Question 4\nIn-Degree Distribution of DPA(27770, 12)')
+        pyplot.xlabel('In-Degrees (scale = log10)')
+        pyplot.ylabel('Distribution (scale = log10)')
+        pyplot.show()
+    return q4_normalised
+
+
+def question5(graph1, graph2):
+    pyplot.loglog(graph2.keys(), graph2.values(), color='magenta',
+                  linestyle='none', marker='+', markersize=5,
+                  label='DPA Graph')
+    pyplot.loglog(graph1.keys(), graph1.values(), color='green',
+                  linestyle='none', marker='.', markersize=5,
+                  label="Citation Graph")
+    pyplot.title('Question5\nComparison of Citation Graph & DPA Graph')
+    pyplot.xlabel('In-Degrees (scale = log10')
+    pyplot.ylabel('Distribution (scale = log10')
+    pyplot.legend(loc='upper right')
+    pyplot.grid(True)
+    pyplot.show()
+
 if __name__ == '__main__':
     citation_graph = load_graph(GRAPH_FILE)
-    # question1(citation_graph, True)
+    q1_dist = question1(citation_graph, False)
     # question2()
-    question3(citation_graph)
+    # question3(citation_graph)
+    q4_dist = question4(27770, 12, False)
+    question5(q1_dist, q4_dist)
