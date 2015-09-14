@@ -78,7 +78,7 @@ def directed_er(nodes, probability):
 def question2():
     """generates random graphs of directed_er to explore patterns"""
     er_20_percent = normalise_in_degree_dist(project1.in_degree_distribution(
-        directed_er(10000, 0.2)))
+        directed_er(10000, 0.00043212)))
     er_50_percent = normalise_in_degree_dist(project1.in_degree_distribution(
         directed_er(10000, 0.5)))
     er_80_percent = normalise_in_degree_dist(project1.in_degree_distribution(
@@ -98,6 +98,24 @@ def question2():
     pyplot.ylabel('Frequency (scale = log10)')
     pyplot.title("Question 2\n"
                  "Sample results of ER Algorithm")
+    pyplot.grid(True)
+    pyplot.show()
+
+
+def question2a(graph):
+    """compares citation graph to er graph"""
+    er_result = normalise_in_degree_dist(project1.in_degree_distribution(
+        directed_er(27770, 0.00043212)))
+    pyplot.loglog(er_result.keys(), er_result.values(), color='blue',
+                  linestyle='none', marker='+', markersize=6,
+                  label='ER Graph')
+    pyplot.loglog(graph.keys(), graph.values(), color='green',
+                  linestyle='none', marker='.', markersize=6,
+                  label="Citation Graph")
+    pyplot.title('Question2\nComparison of Citation Graph & ER Graph')
+    pyplot.xlabel('In-Degrees (scale = log10)')
+    pyplot.ylabel('Distribution (scale = log10)')
+    pyplot.legend(loc='upper right')
     pyplot.grid(True)
     pyplot.show()
 
@@ -145,6 +163,7 @@ if __name__ == '__main__':
     citation_graph = load_graph(GRAPH_FILE)
     q1_dist = question1(citation_graph, False)
     # question2()
+    question2a(q1_dist)
     # question3(citation_graph)
-    q4_dist = question4(27770, 12, False)
-    question5(q1_dist, q4_dist)
+    # q4_dist = question4(27770, 12, False)
+    # question5(q1_dist, q4_dist)
