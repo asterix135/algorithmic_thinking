@@ -3,6 +3,10 @@ Algorithm to build a quadratically expanding hierarchical graph
 and examine the in-degree distribution
 """
 
+import copy
+import project1
+import matplotlib.pyplot as pyplot
+
 BASE_GRAPH = {0: set([1, 2, 3, 4]),
               1: set([0, 2, 4]),
               2: set([0, 1, 3]),
@@ -10,18 +14,29 @@ BASE_GRAPH = {0: set([1, 2, 3, 4]),
               4: set([0, 1, 3])}
 BASE_OUTER_LIST = [1, 2, 3, 4]
 
+
 def build_graph(iterations):
-    # TODO: This is a mess of iterations and copies the way its going: FIX IT!
+    """
+    Builds a hierarchical graph with a base of 5 nodes, with number of
+    levels provided by iterations parameter
+    """
     graph = BASE_GRAPH
     outer_list = BASE_OUTER_LIST
-    next_node_number = len(graph) + 1
+    next_node_number = len(graph)
     for i in range(iterations):
-        graph_copy = graph.copy()
+        graph_copy = copy.deepcopy(graph)
+        outer_list_copy = list(outer_list)
+        outer_list = []
         for j in range(4):
-            new_graph = copy(graph, outer_nodes, next_node_number)
-            new_outer_list = list(outer_list)
-            graph_copy.update(new_graph[0])
-
+            new_graph = copy_graph(graph_copy, outer_list_copy, next_node_number)
+            # add edges to and from 0 node
+            for node in new_graph[1]:
+                new_graph[0][node].add(0)
+                graph[0].add(node)
+            next_node_number += len(new_graph[0])
+            graph.update(new_graph[0])
+            outer_list.extend(new_graph[1])
+    return graph
 
 
 def copy_graph(graph, outer_nodes, nnn):
@@ -40,9 +55,17 @@ def copy_graph(graph, outer_nodes, nnn):
     return new_graph, new_outer_list
 
 
+def plot_graph(graph):
+    """Creates log/log plot of degree distribution for a graph"""
+    dist = project1.in_degree_distribution(graph)
+    print(dist)
+    pyplot.loglog(dist.keys(), dist.values(), color='blue', linestyle='none',
+                  marker='.', markersize=10)
+    pyplot.grid(True)
+    pyplot.show()
+
+
 if __name__ == '__main__':
-    copy = copy_graph(BASE_GRAPH, BASE_OUTER_LIST, 5)
-    print(BASE_GRAPH)
-    print(copy[0])
-    print(copy[1])
+    iterated = build_graph(6)
+    plot_graph(iterated)
 
