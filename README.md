@@ -7,5 +7,8 @@
 - dpa_trial.py - provided Class for dpa algorithm
 - application1_question1.png - support graph for Application 1
 - application1_question2.png - support graph for Application 1
+- application1_question2a.png - support graph for Application 1
 - application1_question4.png - support graph for Application 1
 - application1_question5.png - support graph for Application 1
+- hierarchical_graph.py - function to build a hierarchical graph and examine
+    plot of in-degree distribution
