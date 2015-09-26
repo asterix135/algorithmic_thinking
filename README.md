@@ -16,4 +16,3 @@
 ## Week 3-4
 - bfs_visited.py - Project 2 code
 - test_bfs.py - test routine for bfs_visited
-- test_graphs_mod2.py - test graphs for bfs_visited
