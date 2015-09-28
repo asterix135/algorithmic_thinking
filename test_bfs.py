@@ -1,9 +1,9 @@
 import bfs_visited
-import test_graphs_mod2a
+import test_graphs_mod2
 
 
 def test1():
-    print(bfs_visited.cc_visited(test_graphs_mod2a.GRAPH0))
+    print(bfs_visited.cc_visited(test_graphs_mod2.GRAPH0))
 
 
 def test2():
