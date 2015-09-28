@@ -8,6 +8,7 @@ import app2_create_graphs
 import random
 import bfs_visited
 import matplotlib.pyplot as pyplot
+import test_graphs_mod2
 
 
 # supplied graph has 1239 nodes and 3047 edges
@@ -84,8 +85,39 @@ def question2(resil1, resil2, resil3):
     print('upa graph @20% = ' + str(resil3[check_pt]))
 
 
+def fast_targeted_order(ugraph):
+    """
+    Compute a targeted attack order consisting of nodes of maximal degree
+    returns a list of nodes
+    """
+    # Initialize degree list - sets of in-degree O(n)
+    degree_sets = []
+    for dummy_node_no in range(len(ugraph)):
+        degree_sets.append(set([]))
+    # Populate degree-list based on graph O(n)
+    for node_no in range(len(ugraph)):
+        node_degree = len(ugraph[node_no])
+        degree_sets[node_degree].add(node_no)
+    # remove top-degree elements and add to attack list O(?)
+    attack_order = []
+    position = 0
+    for degree in range(len(ugraph)-1, -1, -1):
+        while len(degree_sets[degree]) > 0:
+            node = degree_sets[degree].pop()
+            for neighbor in ugraph[node]:
+                neighbor_degree = len(ugraph[neighbor])
+                degree_sets[neighbor_degree].discard(neighbor)
+                degree_sets[neighbor_degree-1].add(neighbor)
+            attack_order[position] = node
+            position += 1
+            ugraph.remove(node)  # check if it should be pop
+    return attack_order
+
+
 
 
 if __name__ == '__main__':
-    resil_lists = question1()
-    question2(resil_lists[0], resil_lists[1], resil_lists[2])
+    # resil_lists = question1()
+    # question2(resil_lists[0], resil_lists[1], resil_lists[2])
+    graph0 = test_graphs_mod2.GRAPH0
+    print(fast_targeted_order(graph0))
