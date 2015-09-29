@@ -85,6 +85,15 @@ def question2(resil1, resil2, resil3):
     print('upa graph @20% = ' + str(resil3[check_pt]))
 
 
+def remove_node(ugraph, node):
+    """
+    removes indicated node and all related edges from ugraph
+    """
+    for neighbor in ugraph[node]:
+        ugraph[neighbor].discard(node)
+    ugraph.pop(node)
+
+
 def fast_targeted_order(ugraph):
     """
     Compute a targeted attack order consisting of nodes of maximal degree
@@ -95,22 +104,22 @@ def fast_targeted_order(ugraph):
     for dummy_node_no in range(len(ugraph)):
         degree_sets.append(set([]))
     # Populate degree-list based on graph O(n)
-    for node_no in range(len(ugraph)):
+    for node_no in ugraph:
         node_degree = len(ugraph[node_no])
         degree_sets[node_degree].add(node_no)
     # remove top-degree elements and add to attack list O(?)
     attack_order = []
-    position = 0
-    for degree in range(len(ugraph)-1, -1, -1):
+    reverse_node_list = list(ugraph.keys())
+    reverse_node_list.sort(reverse=True)
+    for degree in reverse_node_list:
         while len(degree_sets[degree]) > 0:
             node = degree_sets[degree].pop()
             for neighbor in ugraph[node]:
                 neighbor_degree = len(ugraph[neighbor])
                 degree_sets[neighbor_degree].discard(neighbor)
                 degree_sets[neighbor_degree-1].add(neighbor)
-            attack_order[position] = node
-            position += 1
-            ugraph.remove(node)  # check if it should be pop
+            attack_order.append(node)
+            remove_node(ugraph, node)
     return attack_order
 
 
@@ -119,5 +128,5 @@ def fast_targeted_order(ugraph):
 if __name__ == '__main__':
     # resil_lists = question1()
     # question2(resil_lists[0], resil_lists[1], resil_lists[2])
-    graph0 = test_graphs_mod2.GRAPH0
+    graph0 = test_graphs_mod2.GRAPH6
     print(fast_targeted_order(graph0))
