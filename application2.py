@@ -8,7 +8,8 @@ import app2_create_graphs
 import random
 import bfs_visited
 import matplotlib.pyplot as pyplot
-import test_graphs_mod2
+import fast_targeted_order as fast_order
+import time
 
 
 # supplied graph has 1239 nodes and 3047 edges
@@ -85,48 +86,73 @@ def question2(resil1, resil2, resil3):
     print('upa graph @20% = ' + str(resil3[check_pt]))
 
 
-def remove_node(ugraph, node):
+def question3():
     """
-    removes indicated node and all related edges from ugraph
+    calculates and plots running time of fast_targeted_order
+    versus targeted_order
+    for a series of increasingly larger UPA graphs
     """
-    for neighbor in ugraph[node]:
-        ugraph[neighbor].discard(node)
-    ugraph.pop(node)
+    t_o_times = []
+    f_t_o_times = []
+    graph_sizes = []
+    for num_nodes in range(10, 1000, 10):
+        graph_sizes.append(num_nodes)
+        curr_graph = app2_create_graphs.upa(num_nodes, 5)
+        t_o_start = time.time()
+        app2_provided.targeted_order(curr_graph)
+        t_o_times.append(time.time() - t_o_start)
+        f_t_o_start = time.time()
+        fast_order.fast_targeted_order(curr_graph)
+        f_t_o_times.append(time.time() - f_t_o_start)
+    pyplot.plot(graph_sizes, t_o_times, color='red', linestyle='-',
+                marker=None, label='targeted_order')
+    pyplot.plot(graph_sizes, f_t_o_times, color='blue', linestyle='-',
+                marker=None, label='fast_targeted_order')
+    pyplot.title('Comparison of algorithm running times: Desktop Python')
+    pyplot.xlabel('number of nodes in upa graph')
+    pyplot.ylabel('running time in seconds')
+    pyplot.grid(True)
+    pyplot.legend(loc='upper left')
+    pyplot.show()
 
 
-def fast_targeted_order(ugraph):
+def question4():
     """
-    Compute a targeted attack order consisting of nodes of maximal degree
-    returns a list of nodes
+    create 3 graphs - subject each to a targeted attack order
+    plot the resulting largest cc for each
     """
-    # Initialize degree list - sets of in-degree O(n)
-    degree_sets = []
-    for dummy_node_no in range(len(ugraph)):
-        degree_sets.append(set([]))
-    # Populate degree-list based on graph O(n)
-    for node_no in ugraph:
-        node_degree = len(ugraph[node_no])
-        degree_sets[node_degree].add(node_no)
-    # remove top-degree elements and add to attack list O(?)
-    attack_order = []
-    reverse_node_list = list(ugraph.keys())
-    reverse_node_list.sort(reverse=True)
-    for degree in reverse_node_list:
-        while len(degree_sets[degree]) > 0:
-            node = degree_sets[degree].pop()
-            for neighbor in ugraph[node]:
-                neighbor_degree = len(ugraph[neighbor])
-                degree_sets[neighbor_degree].discard(neighbor)
-                degree_sets[neighbor_degree-1].add(neighbor)
-            attack_order.append(node)
-            remove_node(ugraph, node)
-    return attack_order
+    network_graph = app2_provided.load_graph(app2_provided.NETWORK_URL)
+    attack_order = fast_order.fast_targeted_order(network_graph)
+    network_resil = bfs_visited.compute_resilience(network_graph, attack_order)
+    er_graph = app2_create_graphs.undirected_er(1239, 0.002)
+    while count_edges(er_graph) < 2900 or count_edges(er_graph) > 3190:
+        er_graph = app2_create_graphs.undirected_er(1239, 0.002)
+    attack_order = fast_order.fast_targeted_order(er_graph)
+    er_resil = bfs_visited.compute_resilience(er_graph, attack_order)
+    upa_graph = app2_create_graphs.upa(1239, 3)
+    attack_order = fast_order.fast_targeted_order(upa_graph)
+    upa_resil = bfs_visited.compute_resilience(upa_graph, attack_order)
 
+    pyplot.plot(range(1240), network_resil, color='red', linestyle='-',
+                marker=None, label='Network Graph')
+    pyplot.plot(range(1240), er_resil, color='blue', linestyle='-',
+                marker=None, label='ER Graph, p=0.002')
+    pyplot.plot(range(1240), upa_resil, color='green', linestyle='-',
+                marker=None, label='UPA Graph, m=3')
+
+    pyplot.title('Question 4\nComparison of Targeted Attack Graph Degradation')
+    pyplot.xlabel('Number of Nodes Removed')
+    pyplot.ylabel('Largest Connected Component')
+    pyplot.legend(loc='upper right')
+    pyplot.grid(True)
+    pyplot.show()
+    return network_resil, er_resil, upa_resil
 
 
 
 if __name__ == '__main__':
     # resil_lists = question1()
     # question2(resil_lists[0], resil_lists[1], resil_lists[2])
-    graph0 = test_graphs_mod2.GRAPH6
-    print(fast_targeted_order(graph0))
+    # question3()
+    resil_lists = question4()
+    question2(resil_lists[0], resil_lists[1], resil_lists[2])
