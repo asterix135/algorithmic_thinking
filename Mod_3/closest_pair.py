@@ -128,5 +128,17 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
     on the relative populations of the merged clusters.
     """
     list_len = len(cluster_list)
-    for idx in range(num_clusters):
-        print('yippee')
+    # initialize cluster centres to largest population counties
+    # 1. get a list of indices sorted in descending population order
+    index_by_pop = list(range(list_len))
+    index_by_pop.sort(reverse=True,
+                      key=lambda idx: cluster_list[idx].total_population())
+    # 2. initialize cluster centre list with biggest counties by pop
+    # TODO: THIS IS WRONG
+    clust_ctrs = []
+    for idx in index_by_pop:
+        clust_ctrs.append(cluster_list[idx])
+    # Main loop in algorithm
+
+    for idx in range(num_iterations):
+        pass
