@@ -93,7 +93,7 @@ def run_example():
 
     Set DESKTOP = True/False to use either matplotlib or simplegui
     """
-    data_table = load_data_table(DATA_3108_URL)
+    data_table = load_data_table(DATA_111_URL)
 
     singleton_list = []
     for line in data_table:
@@ -102,18 +102,19 @@ def run_example():
     # cluster_list = sequential_clustering(singleton_list, 15)
     # print "Displaying", len(cluster_list), "sequential clusters"
 
-    cluster_list = alg_project3_solution.hierarchical_clustering(singleton_list, 9)
-    print "Displaying", len(cluster_list), "hierarchical clusters"
+    # cluster_list = alg_project3_solution.hierarchical_clustering(singleton_list, 9)
+    # print "Displaying", len(cluster_list), "hierarchical clusters"
     #
-    # cluster_list = alg_project3_solution.kmeans_clustering(singleton_list, 9, 5)
-    # print "Displaying", len(cluster_list), "k-means clusters"
+    cluster_list = alg_project3_solution.kmeans_clustering(singleton_list, 15, 5)
+    print "Displaying", len(cluster_list), "k-means clusters"
 
 
     # draw the clusters using matplotlib or simplegui
     if DESKTOP:
         alg_clusters_matplotlib.plot_clusters(data_table, cluster_list, True)
-        #alg_clusters_matplotlib.plot_clusters(data_table, cluster_list, True)  #add cluster centers
+        # alg_clusters_matplotlib.plot_clusters(data_table, cluster_list, True)  #add cluster centers
     else:
         alg_clusters_simplegui.PlotClusters(data_table, cluster_list)   # use toggle in GUI to add cluster centers
 
-run_example()
+if __name__ == '__main__':
+    run_example()

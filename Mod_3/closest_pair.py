@@ -5,6 +5,7 @@ Instructions: https://class.coursera.org/algorithmicthink2-003/wiki/Project_3
 """
 
 import alg_cluster
+import alg_project3_viz as viz
 
 
 def slow_closest_pair(cluster_list):
@@ -115,17 +116,6 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
     single county chosen from the set of the num_cluster counties with the
     largest populations. The function should then compute num_iterations of
     k-means clustering and return this resulting list of clusters.
-
-    As you implement KMeansClustering, here are a several items to keep in mind.
-    In line 4, you should represent an empty cluster as a Cluster object whose
-    set of counties is empty and whose total population is zero. The cluster
-    centers muf, computed by lines 2 and 8-9, should stay fixed as lines 5-7 are
-    executed during one iteration of the outer loop. To avoid modifying these
-    values during execution of lines 5-7, you should consider storing these
-    cluster centers in a separate data structure. Line 7 should be implemented
-    using the merge_clusters method from the Cluster class. merge_clusters will
-    automatically update the cluster centers to their correct locations based
-    on the relative populations of the merged clusters.
     """
     list_len = len(cluster_list)
     # initialize cluster centres to largest population counties
@@ -161,3 +151,17 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
 
     # 10. return {C1 .. Ck}
     return new_clusters
+
+
+def compute_distortions(cluster_list, data_table):
+    """
+    Takes a list of clusters and uses cluster_error to compute its distortion.
+    """
+    return sum([cluster.cluster_error(data_table) for cluster in cluster_list])
+
+def create_cluster_list(url):
+    data_table = viz.load_data_table(url)
+    singleton_list = []
+    for line in data_table:
+        singleton_list.append(alg_cluster.Cluster(set([line[0]]), line[1], line[2], line[3], line[4]))
+    return singleton_list, data_table
