@@ -1,8 +1,6 @@
 """
 Closest pair and clustering functions
 
-Owltest Page: http://codeskulptor.appspot.com/owltest?urlTests=alg.module3_tests.py&urlPylintConfig=alg.pylint_config.py&imports={alg:%28alg_cluster%29}&
-
 Instructions: https://class.coursera.org/algorithmicthink2-003/wiki/Project_3
 """
 
@@ -158,7 +156,7 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
             new_pos = (new_clusters[idx].horiz_center(),
                        new_clusters[idx].vert_center())
             clust_ctrs[idx] = alg_cluster.Cluster(set([]), new_pos[0],
-                                                  new_pos[1],0,0)
+                                                  new_pos[1], 0, 0)
         # clust_ctrs = new_clusters[:]
 
     # 10. return {C1 .. Ck}
