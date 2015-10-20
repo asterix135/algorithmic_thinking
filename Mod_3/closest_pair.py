@@ -11,11 +11,11 @@ import alg_cluster
 
 def slow_closest_pair(cluster_list):
     """
-     Takes a list of Cluster objects and returns a closest pair where the pair
-     is represented by the tuple (dist, idx1, idx2) with idx1 < idx2 where dist
-     is the distance between the closest pair cluster_list[idx1] and
-     cluster_list[idx2]. This function should implement the brute-force closest
-     pair method described in SlowClosestPair from Homework 3.
+    Takes a list of Cluster objects and returns a closest pair where the pair
+    is represented by the tuple (dist, idx1, idx2) with idx1 < idx2 where dist
+    is the distance between the closest pair cluster_list[idx1] and
+    cluster_list[idx2]. This function should implement the brute-force closest
+    pair method described in SlowClosestPair from Homework 3.
     """
     closest_pair = (float('inf'), -1, -1)
     list_len = len(cluster_list)
@@ -154,6 +154,12 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
             # 7. Add element to the closest cluster
             new_clusters[closest_ctr].merge_clusters(cluster_list[pt_idx])
         # 8. Update clust_ctrs based on centre of new_clusters
-        clust_ctrs = new_clusters[:]
+        for idx in range(num_clusters):
+            new_pos = (new_clusters[idx].horiz_center(),
+                       new_clusters[idx].vert_center())
+            clust_ctrs[idx] = alg_cluster.Cluster(set([]), new_pos[0],
+                                                  new_pos[1],0,0)
+        # clust_ctrs = new_clusters[:]
+
     # 10. return {C1 .. Ck}
-    return clust_ctrs
+    return new_clusters
