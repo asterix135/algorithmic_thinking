@@ -6,6 +6,8 @@ Owltest Page: http://codeskulptor.appspot.com/owltest?urlTests=alg.module3_tests
 Instructions: https://class.coursera.org/algorithmicthink2-003/wiki/Project_3
 """
 
+import alg_cluster
+
 
 def slow_closest_pair(cluster_list):
     """
@@ -129,16 +131,29 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
     """
     list_len = len(cluster_list)
     # initialize cluster centres to largest population counties
-    # 1. get a list of indices sorted in descending population order
     index_by_pop = list(range(list_len))
     index_by_pop.sort(reverse=True,
                       key=lambda idx: cluster_list[idx].total_population())
-    # 2. initialize cluster centre list with biggest counties by pop
-    # TODO: THIS IS WRONG
     clust_ctrs = []
-    for idx in index_by_pop:
-        clust_ctrs.append(cluster_list[idx])
-    # Main loop in algorithm
+    for idx in range(num_clusters):
+        clust_ctrs.append(cluster_list[index_by_pop[idx]])
 
-    for idx in range(num_iterations):
-        pass
+    # Main loop in algorithm
+    for dummy_idx0 in range(num_iterations):
+        # 4. initialize k empty sets C1 ... Ck
+        new_clusters = [alg_cluster.Cluster(set([]), 0, 0, 0, 0)
+                        for dummy_idx in range(num_clusters)]
+        # 5. for every element in original list
+        for pt_idx in range(list_len):
+            # 6. find the centre it's closest to
+            min_dist, closest_ctr = float('inf'), 0
+            for clust_idx in range(num_clusters):
+                dist = clust_ctrs[clust_idx].distance(cluster_list[pt_idx])
+                if dist < min_dist:
+                    min_dist, closest_ctr = dist, clust_idx
+            # 7. Add element to the closest cluster
+            new_clusters[closest_ctr].merge_clusters(cluster_list[pt_idx])
+        # 8. Update clust_ctrs based on centre of new_clusters
+        clust_ctrs = new_clusters[:]
+    # 10. return {C1 .. Ck}
+    return clust_ctrs
